@@ -20,7 +20,9 @@ class Parking < ApplicationRecord
 
   def calculate_amount
     if self.amount.blank? && self.start_at.present? && self.end_at.present?
-      self.amount = 9487
+      if duration <= 60
+        self.amount = 200
+      end
     end
   end
 end
