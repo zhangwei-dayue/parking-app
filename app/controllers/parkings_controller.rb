@@ -26,7 +26,6 @@ class ParkingsController < ApplicationController
   def update
     @parking = Parking.find(params[:id])
     @parking.end_at = Time.now
-    @parking.calculate_amount
     @parking.save!
     redirect_to parking_path(@parking)
   end
