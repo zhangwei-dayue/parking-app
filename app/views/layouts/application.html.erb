@@ -8,7 +8,21 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
-    <%= yield %>
-  </body>
+  <% if flash[:notice] %>
+    <%= flash[:notice] %>
+  <% end %>
+
+  <% if flash[:alert] %>
+    <%= flash[:alert] %>
+  <% end %>
+
+  <% if current_user %>
+    <%= link_to("退出", destroy_user_session_path, :method => :delete) %>
+    <%= link_to("修改密码", edit_registration_path(:user)) %>
+  <% else %>
+    <%= link_to("注册", new_registration_path(:user)) %> |
+    <%= link_to("登陆", new_session_path(:user)) %>
+  <% end %>
+  
+  <%= yield %>
 </html>
