@@ -32,13 +32,46 @@ class Parking < ApplicationRecord
     #   end
     #
     #   self.amount = total
-    factor = (self.user.present?)? 50 : 100
+    # factor = (self.user.present?)? 50 : 100
+    # if self.amount.blank? && self.start_at.present? && self.end_at.present?
+    #   if duration <= 60
+    #     self.amount = 200
+    #   else
+    #     self.amount = 200 + ((duration - 60).to_f / 30).ceil * factor
+    #   end
+    # end
     if self.amount.blank? && self.start_at.present? && self.end_at.present?
-      if duration <= 60
-        self.amount = 200
-      else
-        self.amount = 200 + ((duration - 60).to_f / 30).ceil * factor
+      if self.user.blank?
+        self.amount = calculate_guest_term_amount
+      elsif self.parking_type == "long-term"
+        self.amount = calculate_long_term_amount
+      elsif self.parking_type =="short-term"
+        self.amount = calculate_short_term_amount
       end
+    end
+  end
+
+  def calculate_guest_term_amount
+    if duration <= 60
+      self.amount = 200
+    else
+      self.amount = 200 + ((duration - 60).to_f / 30).ceil * 100
+    end
+  end
+
+  def calculate_short_term_amount
+    if duration <= 60
+      self.amount = 200
+    else
+      self.amount = 200 + ((duration - 60).to_f / 30).ceil * 50
+    end
+  end
+
+  def calculate_long_term_amount
+    if duration <= 60 * 6
+      self.amount = 1200
+    else
+      self.amount = (duration.to_f / (60 * 24)).ceil * 1600
     end
   end
 end

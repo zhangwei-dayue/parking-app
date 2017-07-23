@@ -117,5 +117,56 @@ RSpec.describe Parking, type: :model do
       end
     end
 
+    context "long-term" do
+      before do
+        @user = User.create(:email => "test@example.com", :password => "123456")
+        @parking = Parking.new(:parking_type => "long-term", :user => @user, :start_at => @time)
+      end
+      it "360 mins should be ¥12" do
+        # t = Time.now
+        # parking = Parking.new(:parking_type => "shourt-term", :start_at => t, :end_at => t + 30.minutes)
+        # parking.user = User.create(:email => "test@example.com", :password => "123456")
+        @parking.end_at = @time + 360.minutes
+        @parking.calculate_amount
+        expect(@parking.amount).to eq(1200)
+      end
+
+      it "1440 mins should be ¥16" do
+        # t = Time.now
+        # parking = Parking.new(:parking_type => "shourt-term", :start_at => t, :end_at => t + 60.minutes)
+        # parking.user = User.create(:email => "test@example.com", :password => "123456")
+        @parking.end_at = @time + 1440.minutes
+        @parking.calculate_amount
+        expect(@parking.amount).to eq(1600)
+      end
+
+      it "1441 mins should be ¥32" do
+        # t = Time.now
+        # parking = Parking.new(:parking_type => "shourt-term", :start_at => t, :end_at => t + 61.minutes)
+        # parking.user = User.create(:email => "test@example.com", :password => "123456")
+        @parking.end_at = @time + 1441.minutes
+        @parking.calculate_amount
+        expect(@parking.amount).to eq(3200)
+      end
+
+      it "2880 mins should be ¥32" do
+        # t = Time.now
+        # parking = Parking.new(:parking_type => "shourt-term", :start_at => t, :end_at => t + 90.minutes)
+        # parking.user = User.create(:email => "test@example.com", :password => "123456")
+        @parking.end_at = @time + 2880.minutes
+        @parking.calculate_amount
+        expect(@parking.amount).to eq(3200)
+      end
+
+      it "2881 mins should be ¥48" do
+        # t = Time.now
+        # parking = Parking.new(:parking_type => "shourt-term", :start_at => t, :end_at => t + 120.minutes)
+        # parking.user = User.create(:email => "test@example.com", :password => "123456")
+        @parking.end_at = @time + 2881.minutes
+        @parking.calculate_amount
+        expect(@parking.amount).to eq(4800)
+      end
+    end
+
   end
 end
